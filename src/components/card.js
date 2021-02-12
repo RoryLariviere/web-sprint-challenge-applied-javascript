@@ -1,4 +1,34 @@
+import axios from 'axios';
+import {topics} from '../mocks/data';
+
+const articleArr = topics.topics;
+
 const Card = (article) => {
+
+  const cardDiv = document.createElement(`div`);
+  const headlineDiv = document.createElement(`div`);
+  const authorDiv = document.createElement(`div`);
+  const imgContDiv = document.createElement(`div`);
+  const imgEl = document.createElement(`img`);
+  const authNameSpan = document.createElement(`span`);
+
+  cardDiv.classList.add(`card`);
+  headlineDiv.classList.add(`headline`);
+  authorDiv.classList.add(`author`);
+  imgContDiv.classList.add(`img-container`);
+
+  headlineDiv.textContent = article.headline;
+  imgEl.src = article.authorPhoto;
+  authNameSpan.textContent = `By: ${article.authorName}`;
+
+  cardDiv.appendChild(headlineDiv);
+  cardDiv.appendChild(authorDiv);
+  authorDiv.appendChild(imgContDiv);
+  imgContDiv.appendChild(imgEl);
+  authorDiv.appendChild(authNameSpan);
+
+  return cardDiv;
+
   // TASK 5
   // ---------------------
   // Implement this function, which should return the markup you see below.
@@ -20,6 +50,21 @@ const Card = (article) => {
 }
 
 const cardAppender = (selector) => {
+
+  axios
+  .get(`https://lambda-times-api.herokuapp.com/articles`)
+  .then(res => {
+    articleArr.forEach(subj => {
+      res.data.articles[subj].forEach(info => {
+        document.querySelector(selector).appendChild(Card(info))
+      })
+    })
+    console.log(res.data.articles)
+  })
+  .catch(err => {
+    console.log(err)
+  })
+
   // TASK 6
   // ---------------------
   // Implement this function that takes a css selector as its only argument.
